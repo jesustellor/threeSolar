@@ -74,6 +74,12 @@
         solarSystem.add(earthOrbit);
         objects.push(earthOrbit);
 
+        const moonMoon = new THREE.Object3D();
+        moonMoon.position.x = 10;
+        solarSystem.add(moonMoon);
+        objects.push(moonMoon);
+
+
         const earthMaterial = new THREE.MeshPhongMaterial({ color: 0x2233ff });
         const earthMesh = new THREE.Mesh(sphereGeometry, earthMaterial);
         earthOrbit.add(earthMesh);
@@ -91,6 +97,19 @@
         moonMesh.scale.set(0.5, 0.5, 0.5);
         moonOrbit.add(moonMesh);
         objects.push(moonMesh);
+
+        const moonMoonOrbit = new THREE.Object3D();
+        moonMoonOrbit.position.x = 2;
+        moonOrbit.add(moonMoonOrbit);
+
+        const moonMoonMaterial = new THREE.MeshPhongMaterial({
+          color: 0x888888,
+          emissive: 0x222222,
+        });
+        const moonMoonMesh = new THREE.Mesh(sphereGeometry, moonMoonMaterial);
+        moonMoonMesh.scale.set(0.5, 0.5, 0.5);
+        moonMoonOrbit.add(moonMoonMesh);
+        objects.push(moonMoonMesh);
 
         const light = new THREE.DirectionalLight(0xffffff, 1); // Use white light for better visibility
         light.position.set(10, 10, 10);
@@ -126,3 +145,4 @@
     </script>
   </body>
 </html>
+
