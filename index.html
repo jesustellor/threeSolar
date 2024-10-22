@@ -5,15 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <style>
+      html, body {
+        margin: 0;
+        height: 100%;
+      }
+
       body {
         margin: 0;
         padding: 0;
       }
 
-      canvas {
+      #canvas {
         display: block;
-        width: 100vw;
-        height: 100vh;
+        width: 100%;
+        height: 100%;
       }
     </style>
   </head>
@@ -48,6 +53,7 @@
         camera.lookAt(0, 0, 0);
 
         const scene = new THREE.Scene();
+
         // an array of objects to update rotations
         const objects = [];
 
@@ -60,27 +66,86 @@
           widthSegments,
           heightSegments
         );
+
+// adding solar system scene graph node to the scene
+        const solarSystem = new THREE.Object3D();
+        scene.add(solarSystem);
+        objects.push(solarSystem);
+
         // material for the sun..
-        const sunMaterial = new THREE.MeshPhongMaterial({emissive: 0xffff00});
-        // create the mesh from the geometry and material
+        const sunMaterial = new THREE.MeshPhongMaterial({ emissive: 0xffff00 });
+        // create the mesh from the geometry and material which will be added to the scene
         const sunMesh = new THREE.Mesh(sphereGeometry, sunMaterial);
         // scale sun 5x times
         sunMesh.scale.set(5, 5, 5);
         // add the mesh to the scene
-        scene.add(sunMesh);
+        // scene.add(sunMesh);
+        solarSystem.add(sunMesh);
         // add the mesh to the objects array
         objects.push(sunMesh);
+
+        // extracting earth orbit / adding earth orbit scene graph node.
+        const earthOrbit = new THREE.Object3D();
+        earthOrbit.position.x = 10;
+        solarSystem.add(earthOrbit);
+        objects.push(earthOrbit);
+
+        // material for the earth.. just color.
+        const earthMaterial = new THREE.MeshPhongMaterial({color: 0x2233ff});
+        // create the mesh from the geometry and material
+        const earthMesh = new THREE.Mesh(sphereGeometry, earthMaterial);
+        // set the position of the earth to 10 units away from the sun
+        // earthMesh.position.x = 10;
+        // add the earth mesh to the scene
+        // scene.add(earthMesh);
+        // sunMesh.add(earthMesh);
+        // solarSystem.add(earthMesh);
+        earthOrbit.add(earthMesh);
+        // add the earth mesh to the objects array
+        objects.push(earthMesh);
+
+        // adding moon to the earth orbit
+        const moonOrbit = new THREE.Object3D();
+        moonOrbit.position.x = 2;
+        earthOrbit.add(moonOrbit);
+        objects.push(moonOrbit);
+
+        const moonMaterial = new THREE.MeshPhongMaterial({color: 0xaaaaaa});
+        const moonMesh = new THREE.Mesh(sphereGeometry, moonMaterial);
+        moonMesh.scale.set(0.2, 0.2, 0.2);
+        moonOrbit.add(moonMesh);
+        objects.push(moonMesh);
+
+        // adding a moon to the moon orbit
+        const moonOrbit2 = new THREE.Object3D();
+        moonOrbit2.position.x = 2;
+        moonOrbit.add(moonOrbit2);
+        objects.push(moonOrbit2);
+
+        const moonMaterial2 = new THREE.MeshPhongMaterial({color: 0xaaaaaa});
+        const moonMesh2 = new THREE.Mesh(sphereGeometry, moonMaterial2);
+        moonMesh2.scale.set(0.2, 0.2, 0.2);
+        moonOrbit2.add(moonMesh2);
+        objects.push(moonMesh2);
+
+
 
         // adding point light to the center of the scene
         const color = 0xffffff;
         const intensity = 3;
         const pointLight = new THREE.PointLight(color, intensity);
-        pointLight.position.set(0, 0, 0);
+        pointLight.position.set(0, 5, 0);
         scene.add(pointLight);
 
-// function to render the scene and camera.. using requestAnimationFrame loop.
+        // function to render the scene and camera.. using requestAnimationFrame loop.
         function render(time) {
           time *= 0.001;
+
+          if (resizeRendererToDisplaySize(renderer)) {
+            const canvas = renderer.domElement;
+            camera.aspect = canvas.clientWidth / canvas.clientHeight;
+            camera.updateProjectionMatrix();
+          }
 
           objects.forEach((obj) => {
             obj.rotation.y = time;
@@ -89,12 +154,22 @@
           renderer.render(scene, camera);
           requestAnimationFrame(render);
         }
-
+// calling the render function
         requestAnimationFrame(render);
+// function to resize the renderer to display size
+        function resizeRendererToDisplaySize(renderer) {
+          const pixelRatio = window.devicePixelRatio;
+          const width = Math.floor(canvas.clientWidth * pixelRatio);
+          const height = canvas.clientHeight;
+          const needResize = canvas.width !== width || canvas.height !== height;
+          if (needResize) {
+            renderer.setSize(width, height, false);
+          }
+          return needResize;
+        }
       }
-
+// calling the main function.
       main();
     </script>
   </body>
 </html>
-
