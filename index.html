@@ -42,6 +42,7 @@
         const near = 0.1;
         const far = 500;
         const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+        camera.position.set(0, 50, 0);
         camera.position.set(0, 50, 0); // Adjust camera position to ensure the sunMesh is visible
         camera.up.set(0, 0, 1);
         camera.lookAt(0, 0, 0);
@@ -88,6 +89,7 @@
         const moonOrbit = new THREE.Object3D();
         moonOrbit.position.x = 2;
         earthOrbit.add(moonOrbit);
+        objects.push(moonOrbit);
 
         const moonMaterial = new THREE.MeshPhongMaterial({
           color: 0x888888,
@@ -111,6 +113,7 @@
         moonMoonOrbit.add(moonMoonMesh);
         objects.push(moonMoonMesh);
 
+        const light = new THREE.DirectionalLight(0xffffff, 1);
         const light = new THREE.DirectionalLight(0xffffff, 1); // Use white light for better visibility
         light.position.set(10, 10, 10);
         scene.add(light);
@@ -126,6 +129,7 @@
         });
 
         function render(time) {
+          time *= 0.001;
           time *= 0.001; // convert time to seconds
 
           objects.forEach((obj) => {
