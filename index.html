@@ -37,17 +37,40 @@
           antialias: true,
         });
 
+        // create camera with fov aspect and near/far
         const fov = 75;
         const aspect = window.innerWidth / window.innerHeight;
         const near = 0.1;
         const far = 500;
         const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-        camera.position.set(0, 50, 0);
-        camera.position.set(0, 50, 0); // Adjust camera position to ensure the sunMesh is visible
-        camera.up.set(0, 0, 1);
+        camera.position.set(0, 50, 0); // Adjust camera position to ensure the sunMesh is visible (x, y, z)
+        camera.up.set(0, 0, 1); // (x, y, z)
         camera.lookAt(0, 0, 0);
 
         const scene = new THREE.Scene();
+        // an array of objects to update rotations
+        const objects = [];
+
+        // use just one sphere for the sun, earth, and moon.
+        const radius = 1;
+        const widthSegments = 6;
+        const heightSegments = 6;
+        const sphereGeometry = new THREE.SphereGeometry(
+          radius,
+          widthSegments,
+          heightSegments
+        );
+        // material for the sun..
+        const sunMaterial = new THREE.MeshPhongMaterial({emissive: 0xffff00});
+        // create the mesh from the geometry and material
+        const sunMesh = new THREE.Mesh(sphereGeometry, sunMaterial);
+        // scale sun 5x times
+        sunMesh.scale.set(5, 5, 5);
+        // add the mesh to the scene
+        scene.add(sunMesh);
+        // add the mesh to the objects array
+        objects.push(sunMesh);
+        
       }
 
       main();
